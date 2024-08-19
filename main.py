@@ -1,6 +1,7 @@
 # this allows us to use code from
 # the open-source pygame library
 # throughout this file
+import sys
 import pygame
 
 # import everything from a file
@@ -8,7 +9,9 @@ from constants import *
 
 #import specific bits from a file
 from player import Player
+from asteroid import Asteroid
 from asteroidfield import AsteroidField
+from shot import Shot
 
 def main():
     pygame.init()
@@ -18,10 +21,12 @@ def main():
     updateable = pygame.sprite.Group()
     drawable = pygame.sprite.Group()
     asteroids = pygame.sprite.Group()
+    shots = pygame.sprite.Group()
 
     Player.containers = (updateable, drawable)
     Asteroid.containers = (updateable, drawable, asteroids)
     AsteroidField.containers = (updateable)
+    Shot.containers = (updateable, drawable)
     asteroid_field = AsteroidField()
 
     player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 )
@@ -34,6 +39,12 @@ def main():
         
         for obj in updateable:
             obj.update(dt)
+
+        for asteroid in asteroids:
+            if asteroid.collisions(player):
+                print("Game over!")
+                sys.exit()
+
 
         screen.fill("black")
 
